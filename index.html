@@ -394,8 +394,8 @@ const today = () => GL.tpDate(Date.now());
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const roles = () => (S.settings.main && S.settings.main.roles) || DEFAULT_ROLES;
 const roleOf = id => roles().find(r => r.id === id) || DEFAULT_ROLES.find(r => r.id === id);
-const memberName = id => (S.members[id] && S.members[id].nick) || (roleOf(id) && roleOf(id).label) || '家人';
-const memberAv = id => (S.members[id] && S.members[id].avatar) || (roleOf(id) && roleOf(id).emoji) || '🌸';
+const memberName = id => String(id).startsWith('o:') ? String(id).slice(2) : (S.members[id] && S.members[id].nick) || (roleOf(id) && roleOf(id).label) || '家人';
+const memberAv = id => String(id).startsWith('o:') ? '💝' : (S.members[id] && S.members[id].avatar) || (roleOf(id) && roleOf(id).emoji) || '🌸';
 const myBalance = () => GL.balance(S.ledger, S.me);
 const postsSorted = () => Object.values(S.posts).sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
 const likedByMe = pid => !!S.likes[pid + '_' + S.me];
@@ -583,14 +583,16 @@ function viewWrite() {
     const p = S.editing && S.posts[S.editing];
     S.draft = p ? { items: p.items.slice(), to: (p.to || []).slice() } : { items: ['', ''], to: [] };
   }
-  const d = S.draft, others = roles().filter(r => r.id !== S.me);
+  const d = S.draft, others = roles().filter(r => r.id !== S.me), mine = (S.members[S.me] && S.members[S.me].thanks) || [];
   const fields = d.items.map((t, i) => '<div class="field"><textarea data-i="' + i + '" maxlength="' + MAX_LEN + '" placeholder="' + (i === 0 ? '寫下一件今天想感謝的事…' : '還有嗎？（可以不寫）') + '">' + esc(t) + '</textarea><span class="cnt">' + t.length + '/' + MAX_LEN + '</span>' +
     (d.items.length > 1 ? '<button class="rm" data-act="rmitem" data-i="' + i + '">✕</button>' : '') + '</div>').join('');
   return '<h2 style="margin:4px 2px 10px">' + (S.editing ? '✏️ 修改感恩' : '📝 今天的感恩') + '</h2>' +
     '<div class="prompt"><span>💡</span><span class="q">' + esc(PROMPTS[S.newPrompt]) + '</span><button class="icon-btn" data-act="prompt" title="換一題">🔄</button></div>' + fields +
     (d.items.length < MAX_ITEMS ? '<button class="btn sm ghost" data-act="additem">＋ 再加一條</button>' : '') +
     '<div class="lbl">💌 想謝謝誰？（可複選，也可以不選）</div><div class="chips">' +
-    others.map(r => '<button class="pick ' + (d.to.includes(r.id) ? 'on' : '') + '" data-act="toggleto" data-id="' + esc(r.id) + '">' + esc(memberAv(r.id)) + ' ' + esc(memberName(r.id)) + '</button>').join('') + '</div>' +
+    others.map(r => '<button class="pick ' + (d.to.includes(r.id) ? 'on' : '') + '" data-act="toggleto" data-id="' + esc(r.id) + '">' + esc(memberAv(r.id)) + ' ' + esc(memberName(r.id)) + '</button>').join('') +
+    mine.map(n => '<button class="pick ' + (d.to.includes('o:' + n) ? 'on' : '') + '" data-act="toggleto" data-id="' + esc('o:' + n) + '">💝 ' + esc(n) + '</button>').join('') + '</div>' +
+    '<div class="row" style="margin:-6px 0 14px"><input id="newthanks" class="input" maxlength="8" placeholder="想謝謝其他人？例如：王阿姨"><button class="btn sm" data-act="addthanks">＋ 新增</button></div>' +
     '<button class="btn block" id="submitbtn" data-act="submit">' + (S.editing ? '儲存修改 💾' : '送出感恩 💕　+' + GL.COINS.post + ' ' + coinSvg()) + '</button>' +
     (S.editing ? '<div style="height:10px"></div><button class="btn ghost block" data-act="canceledit">取消</button>' : '');
 }
@@ -684,6 +686,17 @@ const ACT = {
     const data = { id, role: id, nick: nick.slice(0, 8), avatar: S.welcome.avatar || r.emoji, createdAt: Date.now() };
     S.members[id] = data; await DB.set('members', id, data).catch(() => {});
     localStorage.setItem('gl_me', id); S.me = id; S.loginDone = false; S.welcome = { step: 'role' }; onData();
+  },
+  async addthanks() {
+    const name = (($('#newthanks') || {}).value || '').trim().replace(/\s+/g, ' ').slice(0, 8);
+    if (!name) { toast('請先輸入名字喔'); return; }
+    const m = S.members[S.me], list = (m.thanks || []).slice();
+    if (list.includes(name) || roles().some(r => memberName(r.id) === name)) { toast('「' + name + '」已經在名單裡了'); return; }
+    if (list.length >= 30) { toast('最多可以記 30 個名字'); return; }
+    list.push(name); m.thanks = list;
+    if (!S.draft.to.includes('o:' + name)) S.draft.to.push('o:' + name);
+    await DB.update('members', S.me, { thanks: list }).catch(() => toast('名單沒存成功，請檢查網路'));
+    render(); toast('已記住「' + name + '」💝');
   },
   nextquote() { nextQuote(); },
   wallmode(t) { S.wallMode = t.dataset.m; render(); },
