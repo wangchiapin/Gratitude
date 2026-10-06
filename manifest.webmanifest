@@ -1,0 +1,17 @@
+{
+  "name": "家人感恩牆",
+  "short_name": "感恩牆",
+  "description": "全家一起寫感恩日記，用愛心和感恩幣記錄每一天的小幸福",
+  "lang": "zh-Hant",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff4ee",
+  "theme_color": "#ffc2d1",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

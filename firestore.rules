@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 家人資料：可讀、可新增、可改暱稱頭像；不能刪
+    match /gratitude_members/{id} {
+      allow read: if true;
+      allow create, update: if request.resource.data.nick is string
+                            && request.resource.data.nick.size() >= 1
+                            && request.resource.data.nick.size() <= 8
+                            && request.resource.data.avatar is string
+                            && request.resource.data.avatar.size() <= 8;
+      allow delete: if false;
+    }
+
+    // 感恩日記：1～3 條；可改可刪（誰能改刪由 App 控制）
+    match /gratitude_posts/{id} {
+      allow read: if true;
+      allow create, update: if request.resource.data.items is list
+                            && request.resource.data.items.size() >= 1
+                            && request.resource.data.items.size() <= 3
+                            && request.resource.data.author is string
+                            && request.resource.data.date is string
+                            && request.resource.data.date.size() == 10;
+      allow delete: if true;
+    }
+
+    // 愛心：只能新增或刪除（刪日記時一起收回），不能改
+    match /gratitude_likes/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.post is string
+                    && request.resource.data.member is string;
+      allow update: if false;
+      allow delete: if true;
+    }
+
+    // 感恩幣帳本：只能新增（同一編號不能重複領）、不能改；刪文時才會刪
+    match /gratitude_ledger/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.amount is int
+                    && request.resource.data.amount >= 1
+                    && request.resource.data.amount <= 3
+                    && request.resource.data.member is string;
+      allow update: if false;
+      allow delete: if true;
+    }
+
+    // 設定（角色名單、管理密碼雜湊）
+    match /gratitude_settings/{id} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if false;
+    }
+
+    // 其他集合一律不開放
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

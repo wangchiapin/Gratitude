@@ -281,7 +281,15 @@ window.GL = (function () {
    Firebase 設定：把你的專案設定貼在下面（沿用現有 Firestore 專案即可）。
    留空 (null) 時會進入「本機測試模式」，資料只存在這支手機的瀏覽器裡，不會同步。
    ─────────────────────────────────────────────── */
-const FIREBASE_CONFIG = null;
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBh6Z_s6UBRqis-FWn-ecl3t8Rz6d1W6YM",
+  authDomain: "gratitude-wall-ef60d.firebaseapp.com",
+  projectId: "gratitude-wall-ef60d",
+  storageBucket: "gratitude-wall-ef60d.firebasestorage.app",
+  messagingSenderId: "749463368674",
+  appId: "1:749463368674:web:f8c54ee0edb6ead9e4ffbb",
+  measurementId: "G-GRKT8VGM76"
+};
 /* 例：
 const FIREBASE_CONFIG = {
   apiKey: "...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..."
