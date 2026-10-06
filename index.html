@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>家人感恩牆</title>
+<meta name="theme-color" content="#ffc2d1">
+<meta name="description" content="全家一起寫感恩日記，用愛心和感恩幣記錄每一天的小幸福">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="感恩牆">
+<style>
+:root{
+  --bg:#fff4ee; --card:#ffffff; --pink:#ff8fab; --pink-d:#f0668c; --pink2:#ffc2d1; --pink3:#ffe5ec;
+  --mint:#c9f0df; --mint-d:#6fcfa5; --gold:#ffc83d; --gold-d:#e9a800; --ink:#5b3a42; --soft:#a7838c; --line:#ffd9e2;
+  --r:22px;
+  --font:"Hiragino Maru Gothic ProN","jf-openhuninn","PingFang TC","Noto Sans TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;
+  background-image:radial-gradient(circle at 12% 8%,#ffe0ea 0,transparent 38%),radial-gradient(circle at 92% 30%,#ffeccf 0,transparent 34%);
+  background-attachment:fixed;min-height:100vh;padding-bottom:calc(92px + env(safe-area-inset-bottom));}
+button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:none;font-size:inherit}
+textarea,input{font-family:inherit;font-size:16px;color:var(--ink)}
+h2,h3{margin:0}
+.hidden{display:none!important}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:rgba(255,244,238,.92);backdrop-filter:blur(8px);}
+.logo{font-size:21px;font-weight:800;letter-spacing:1px;display:flex;align-items:center;gap:6px}
+.logo .bob{display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-4px) rotate(6deg)}}
+.chip{background:#fff;border:2px solid var(--line);border-radius:999px;padding:3px 12px;font-weight:700;display:flex;align-items:center;gap:4px;box-shadow:0 3px 0 var(--line)}
+.chip:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+
+main{max-width:560px;margin:0 auto;padding:6px 14px 20px}
+
+/* cards */
+.card{background:var(--card);border-radius:var(--r);padding:16px;margin:0 0 14px;box-shadow:0 6px 0 var(--pink3),0 10px 24px rgba(240,102,140,.08);border:2px solid #fff}
+.card.pink{background:var(--pink3)}
+.ph{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.av{width:46px;height:46px;border-radius:50%;background:var(--pink3);display:grid;place-items:center;font-size:28px;flex:none;border:2px solid var(--pink2)}
+.ph b{display:block;line-height:1.2}
+.ph small{color:var(--soft)}
+.ph .menu{margin-left:auto;display:flex;gap:2px}
+.icon-btn{width:36px;height:36px;border-radius:50%;font-size:18px;display:grid;place-items:center}
+.icon-btn:active{background:var(--pink3)}
+.items{margin:6px 0 8px;padding:0;list-style:none}
+.items li{background:#fffaf7;border-radius:14px;padding:8px 12px;margin-bottom:6px;white-space:pre-wrap;word-break:break-word;border:1.5px dashed var(--line)}
+.items li::before{content:"🌷 ";}
+.to{font-size:14px;color:var(--soft);margin:4px 0 8px}
+.tag{display:inline-flex;align-items:center;gap:3px;background:var(--mint);color:#2f6b55;border-radius:999px;padding:1px 10px 1px 6px;margin:2px 4px 2px 0;font-size:14px}
+.act{display:flex;align-items:center;gap:10px}
+.like{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--pink2);border-radius:999px;padding:4px 14px;font-weight:700;color:var(--pink-d);box-shadow:0 3px 0 var(--pink2)}
+.like:active{transform:translateY(2px);box-shadow:0 1px 0 var(--pink2)}
+.like.on{background:var(--pink);color:#fff;border-color:var(--pink-d);box-shadow:0 3px 0 var(--pink-d)}
+.like.self{opacity:.55}
+.sub{color:var(--soft);font-size:14px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--pink);color:#fff;font-weight:800;border-radius:999px;padding:10px 22px;box-shadow:0 5px 0 var(--pink-d);font-size:17px}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--pink-d)}
+.btn.block{display:flex;width:100%}
+.btn.mint{background:var(--mint-d);box-shadow:0 5px 0 #4aa985}
+.btn.mint:active{box-shadow:0 2px 0 #4aa985}
+.btn.ghost{background:#fff;color:var(--pink-d);border:2px solid var(--pink2);box-shadow:0 4px 0 var(--pink2)}
+.btn.sm{padding:6px 14px;font-size:14px;box-shadow:0 3px 0 var(--pink-d)}
+.btn.sm.ghost{box-shadow:0 3px 0 var(--pink2)}
+.btn.danger{background:#ff7a7a;box-shadow:0 5px 0 #d85a5a}
+.btn[disabled]{opacity:.5}
+.seg{display:flex;background:#fff;border-radius:999px;padding:4px;margin:0 0 12px;border:2px solid var(--line)}
+.seg button{flex:1;padding:6px 0;border-radius:999px;font-weight:700;color:var(--soft)}
+.seg button.on{background:var(--pink);color:#fff}
+
+/* bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.96);border-top:2px solid var(--line);
+  display:flex;justify-content:space-around;align-items:flex-end;padding:6px 8px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(10px)}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:0;font-size:12px;color:var(--soft);font-weight:700;padding:2px 0}
+.nav button .ic{font-size:24px;line-height:1.2;transition:transform .2s}
+.nav button.on{color:var(--pink-d)}
+.nav button.on .ic{transform:scale(1.18)}
+.nav button.plus .ic{width:58px;height:58px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;font-size:30px;
+  margin-top:-26px;box-shadow:0 5px 0 var(--pink-d),0 0 0 6px #fff;transition:transform .15s}
+.nav button.plus:active .ic{transform:translateY(3px)}
+
+/* write */
+.prompt{background:var(--gold);background:linear-gradient(135deg,#ffe38a,#ffd0a8);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;font-weight:700}
+.prompt span.q{flex:1}
+.field{position:relative;margin-bottom:10px}
+.field textarea{width:100%;min-height:72px;resize:none;border:2.5px solid var(--pink2);border-radius:18px;padding:10px 12px 22px;background:#fff;outline:none}
+.field textarea:focus{border-color:var(--pink)}
+.field .cnt{position:absolute;right:12px;bottom:6px;font-size:12px;color:var(--soft)}
+.field .rm{position:absolute;right:-6px;top:-8px;width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid var(--line);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.pick{display:inline-flex;align-items:center;gap:4px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:700;color:var(--soft)}
+.pick.on{background:var(--mint);border-color:var(--mint-d);color:#2f6b55}
+.lbl{font-weight:800;margin:12px 0 4px}
+
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal .dow{font-size:12px;color:var(--soft);font-weight:700}
+.cal .d{aspect-ratio:1;border-radius:12px;background:#fffaf7;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;position:relative;border:1.5px solid transparent}
+.cal .d.has{background:var(--pink3);border-color:var(--pink2);font-weight:800}
+.cal .d.today{border-color:var(--gold-d)}
+.cal .d.sel{background:var(--pink);color:#fff}
+.cal .d .dots{font-size:11px;line-height:1;margin-top:1px;max-width:100%;overflow:hidden}
+.cal .d.empty{background:transparent}
+.monthbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-weight:800;font-size:18px}
+
+/* jar */
+.jarwrap{text-align:center;padding-top:6px}
+.jar{width:230px;max-width:70%;cursor:pointer;transition:transform .2s}
+.jar.shake{animation:shake .6s}
+@keyframes shake{0%,100%{transform:rotate(0)}15%{transform:rotate(-9deg)}35%{transform:rotate(8deg)}55%{transform:rotate(-6deg)}75%{transform:rotate(4deg)}}
+.slip{background:#fff;border-radius:18px;padding:16px;margin:14px auto 0;max-width:420px;text-align:left;border:2.5px dashed var(--pink2);
+  box-shadow:0 6px 0 var(--pink3);animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.3) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+
+/* wallet */
+.bal{text-align:center;padding:10px 0 4px}
+.bal .big{font-size:52px;font-weight:900;color:var(--gold-d);line-height:1.1;text-shadow:0 3px 0 #fff3c4}
+.coin{display:inline-block;animation:spin 3.2s linear infinite;transform-style:preserve-3d}
+@keyframes spin{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
+.task{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1.5px dashed var(--line)}
+.task:last-child{border-bottom:0}
+.task .ck{width:28px;height:28px;border-radius:50%;border:2.5px solid var(--pink2);display:grid;place-items:center;font-size:15px;color:#fff;flex:none}
+.task.done .ck{background:var(--mint-d);border-color:var(--mint-d)}
+.task .tx{flex:1}
+.task .rw{font-weight:800;color:var(--gold-d)}
+.rank{display:flex;align-items:center;gap:10px;padding:6px 0}
+.rank .no{width:26px;text-align:center;font-weight:900;color:var(--pink-d)}
+.led{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1.5px dashed var(--line);font-size:14px}
+.led:last-child{border-bottom:0}
+.led b.p{color:#2f9b6e}.led b.m{color:#d85a5a}
+
+/* list menu */
+.menu-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border-radius:var(--r);padding:14px 16px;margin-bottom:12px;box-shadow:0 5px 0 var(--pink3);font-weight:800;font-size:17px;border:2px solid #fff}
+.menu-item .mi{font-size:28px}
+.menu-item small{display:block;font-weight:500;color:var(--soft);font-size:13px}
+.back{margin:0 0 10px;font-weight:800;color:var(--pink-d)}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat .s{background:#fff;border-radius:18px;padding:12px;text-align:center;box-shadow:0 4px 0 var(--pink3)}
+.stat .s b{display:block;font-size:28px;color:var(--pink-d);line-height:1.2}
+.bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
+.bar .tr{flex:1;height:14px;background:var(--pink3);border-radius:999px;overflow:hidden}
+.bar .fl{height:100%;background:linear-gradient(90deg,var(--pink2),var(--pink));border-radius:999px}
+.avgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:8px 0}
+.avgrid button{aspect-ratio:1;border-radius:16px;background:#fff;border:2.5px solid var(--line);font-size:26px}
+.avgrid button.on{border-color:var(--pink);background:var(--pink3)}
+.rolegrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rolebtn{background:#fff;border-radius:22px;padding:16px 8px;text-align:center;font-weight:800;box-shadow:0 5px 0 var(--pink3);border:2px solid #fff}
+.rolebtn .e{font-size:46px;display:block;line-height:1.2}
+.rolebtn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--pink3)}
+.input{width:100%;border:2.5px solid var(--pink2);border-radius:16px;padding:10px 12px;background:#fff;outline:none}
+.input:focus{border-color:var(--pink)}
+.row{display:flex;gap:8px;align-items:center}
+.row .input{flex:1}
+.notice{background:#fff7d6;border:2px solid #ffe38a;border-radius:16px;padding:10px 12px;font-size:14px;margin-bottom:12px}
+.notice.warn{background:#ffe9e9;border-color:#ffb4b4}
+.welcome{text-align:center;padding:30px 4px 10px}
+.welcome .big{font-size:64px;animation:bob 2.4s ease-in-out infinite;display:inline-block}
+.empty{text-align:center;color:var(--soft);padding:34px 10px}
+.empty .e{font-size:54px;display:block}
+
+/* floating hearts & coins */
+.floaty{position:fixed;pointer-events:none;z-index:100;will-change:transform,opacity;animation:floatUp var(--dur,1.8s) ease-out var(--delay,0s) forwards;opacity:0}
+@keyframes floatUp{0%{opacity:0;transform:translate(0,0) scale(.4)}12%{opacity:1}100%{opacity:0;transform:translate(var(--dx,0),-70vh) scale(var(--sc,1.2)) rotate(var(--rot,0deg))}}
+.coinpop{position:fixed;left:50%;top:38%;transform:translateX(-50%);z-index:110;pointer-events:none;background:#fff;border:3px solid var(--gold);color:var(--gold-d);
+  font-weight:900;font-size:26px;border-radius:999px;padding:8px 22px;box-shadow:0 6px 0 #ffe9a3,0 12px 30px rgba(233,168,0,.3);animation:coinpop 1.7s ease-out forwards;white-space:nowrap}
+@keyframes coinpop{0%{opacity:0;transform:translate(-50%,20px) scale(.5)}15%{opacity:1;transform:translate(-50%,0) scale(1.1)}30%{transform:translate(-50%,0) scale(1)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-60px) scale(1)}}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;z-index:120;font-size:15px;max-width:88vw;text-align:center;animation:fade 2.6s forwards}
+@keyframes fade{0%{opacity:0}10%{opacity:1}85%{opacity:1}100%{opacity:0}}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:150;background:rgba(91,58,66,.5);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:26px 26px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+.sheet img{width:100%;border-radius:14px;margin-bottom:10px;border:2px solid var(--line);display:block}
+.sheet .row{position:sticky;bottom:0;background:var(--bg);padding-top:6px}
+.banner{background:#fff;border-bottom:2px solid var(--line);padding:8px 14px;font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- ============ 純邏輯（可單獨測試）============ -->
+<script id="logic">
+window.GL = (function () {
+  const COINS = { login: 1, post: 3, likeGive: 1, likeGet: 1, likeCap: 5 };
+  const DOW = ['日', '一', '二', '三', '四', '五', '六'];
+
+  // 台灣時間（UTC+8）的日期 YYYY-MM-DD
+  function tpDate(ms) { return new Date(ms + 8 * 3600 * 1000).toISOString().slice(0, 10); }
+  function addDays(d, n) { return new Date(Date.parse(d + 'T00:00:00Z') + n * 86400000).toISOString().slice(0, 10); }
+  function dow(d) { return new Date(Date.parse(d + 'T00:00:00Z')).getUTCDay(); }
+  function fmtDate(d) { return Number(d.slice(5, 7)) + '月' + Number(d.slice(8, 10)) + '日 週' + DOW[dow(d)]; }
+  function monthOf(d) { return d.slice(0, 7); }
+  function addMonths(m, n) {
+    const y = Number(m.slice(0, 4)), mo = Number(m.slice(5, 7)) - 1 + n;
+    const yy = y + Math.floor(mo / 12), mm = ((mo % 12) + 12) % 12;
+    return yy + '-' + String(mm + 1).padStart(2, '0');
+  }
+  function daysInMonth(m) { return new Date(Date.UTC(Number(m.slice(0, 4)), Number(m.slice(5, 7)), 0)).getUTCDate(); }
+
+  // 連續天數：今天寫過就從今天算，否則從昨天算
+  function streak(dateSet, today) {
+    let d = dateSet.has(today) ? today : addDays(today, -1), n = 0;
+    while (dateSet.has(d)) { n++; d = addDays(d, -1); }
+    return n;
+  }
+  function balance(ledger, mid) {
+    let s = 0;
+    for (const k in ledger) if (ledger[k].member === mid) s += ledger[k].amount;
+    return s;
+  }
+  function likeGivenToday(ledger, mid, date) {
+    let n = 0;
+    for (const k in ledger) { const e = ledger[k]; if (e.member === mid && e.type === 'like_give' && e.date === date) n++; }
+    return n;
+  }
+  // 按讚：不能讚自己、每篇一人一次；每人每天最多 5 次有幣，超過仍可讚但雙方都不給幣
+  function planLike(o) {
+    const post = o.post, liker = o.likerId, date = o.date;
+    if (post.author === liker) return { ok: false, reason: 'self' };
+    const likeId = post.id + '_' + liker;
+    if (o.likes[likeId]) return { ok: false, reason: 'dup' };
+    const entries = [];
+    if (likeGivenToday(o.ledger, liker, date) < COINS.likeCap) {
+      entries.push({ id: 'lg_' + post.id + '_' + liker, type: 'like_give', member: liker, amount: COINS.likeGive, date: date, post: post.id });
+      entries.push({ id: 'lr_' + post.id + '_' + liker, type: 'like_get', member: post.author, amount: COINS.likeGet, date: date, post: post.id, from: liker });
+    }
+    return { ok: true, likeId: likeId, entries: entries };
+  }
+  // 刪除文章：連同這篇文章產生的所有幣、愛心一起收回
+  function planDelete(post, ledger, likes) {
+    const ledgerIds = [], likeIds = [];
+    for (const k in ledger) if (ledger[k].post === post.id) ledgerIds.push(k);
+    for (const k in likes) if (likes[k].post === post.id) likeIds.push(k);
+    return { ledgerIds: ledgerIds, likeIds: likeIds };
+  }
+  function likeCount(likes, postId) {
+    let n = 0; for (const k in likes) if (likes[k].post === postId) n++; return n;
+  }
+  const LEDGER_LABEL = { login: '每日登入', post: '寫感恩日記', like_give: '按讚送出愛心', like_get: '收到愛心' };
+
+  function monthStats(posts, likes, month) {
+    const list = Object.values(posts).filter(p => p.date.slice(0, 7) === month);
+    const byAuthor = {}, thanked = {};
+    list.forEach(p => {
+      byAuthor[p.author] = (byAuthor[p.author] || 0) + 1;
+      (p.to || []).forEach(t => { thanked[t] = (thanked[t] || 0) + 1; });
+    });
+    let top = null, topN = -1;
+    list.forEach(p => { const n = likeCount(likes, p.id); if (n > topN) { topN = n; top = p; } });
+    let heartTotal = 0; list.forEach(p => { heartTotal += likeCount(likes, p.id); });
+    const days = new Set(list.map(p => p.date));
+    return { posts: list.length, byAuthor: byAuthor, thanked: thanked, top: top, topLikes: Math.max(topN, 0), hearts: heartTotal, activeDays: days.size };
+  }
+  async function sha(text) {
+    try {
+      if (window.crypto && crypto.subtle) {
+        const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('gl:' + text));
+        return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');
+      }
+    } catch (e) {}
+    let h = 5381; const s = 'gl:' + text; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+    return 'x' + (h >>> 0).toString(16);
+  }
+  return { COINS, DOW, tpDate, addDays, dow, fmtDate, monthOf, addMonths, daysInMonth, streak, balance, likeGivenToday, planLike, planDelete, likeCount, LEDGER_LABEL, monthStats, sha };
+})();
+</script>
+
+<!-- ============ 主程式 ============ -->
+<script type="module" id="app-js">
+/* ───────────────────────────────────────────────
+   Firebase 設定：把你的專案設定貼在下面（沿用現有 Firestore 專案即可）。
+   留空 (null) 時會進入「本機測試模式」，資料只存在這支手機的瀏覽器裡，不會同步。
+   ─────────────────────────────────────────────── */
+const FIREBASE_CONFIG = null;
+/* 例：
+const FIREBASE_CONFIG = {
+  apiKey: "...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..."
+};
+*/
+const PREFIX = 'gratitude_';
+const GL = window.GL;
+
+const DEFAULT_ROLES = [
+  { id: 'dad', label: '爸爸', emoji: '🐻' }, { id: 'mom', label: '媽媽', emoji: '🐰' },
+  { id: 'grandpa', label: '爺爺', emoji: '🐘' }, { id: 'grandma', label: '奶奶', emoji: '🦒' },
+  { id: 'brother', label: '哥哥', emoji: '🐶' }, { id: 'sister', label: '姊姊', emoji: '🐱' },
+  { id: 'lbrother', label: '弟弟', emoji: '🐼' }, { id: 'lsister', label: '妹妹', emoji: '🐥' }
+];
+const AVATARS = ['🐻','🐰','🐘','🦒','🐶','🐱','🐼','🐥','🦊','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🐧','🦄','🐹','🐢','🦋','🐝','🐙','🦉'];
+const PROMPTS = [
+  '今天有誰幫了你？', '今天吃到什麼好吃的？', '今天發生了什麼小確幸？', '有什麼事讓你覺得安心？',
+  '今天誰讓你笑了？', '有什麼東西是你覺得「剛剛好」的？', '今天天氣或風景有讓你開心嗎？',
+  '最近誰默默為你做了什麼？', '今天身體幫了你什麼忙？', '有什麼小事你原本會忽略？',
+  '想對家裡的誰說聲謝謝？', '今天學到或看到什麼新鮮事？'
+];
+const MAX_ITEMS = 3, MAX_LEN = 80;
+
+/* ───────── 資料層：Firestore 或本機 ───────── */
+async function makeDB() {
+  if (FIREBASE_CONFIG) {
+    const V = '10.14.1';
+    const A = await import('https://www.gstatic.com/firebasejs/' + V + '/firebase-app.js');
+    const F = await import('https://www.gstatic.com/firebasejs/' + V + '/firebase-firestore.js');
+    const fs = F.getFirestore(A.initializeApp(FIREBASE_CONFIG));
+    return {
+      mode: 'cloud',
+      sub: (n, cb) => F.onSnapshot(F.collection(fs, PREFIX + n), snap => {
+        const m = {}; snap.forEach(d => { m[d.id] = Object.assign({}, d.data(), { id: d.id }); }); cb(m);
+      }, err => console.error('Firestore', n, err)),
+      set: (n, id, data) => F.setDoc(F.doc(fs, PREFIX + n, id), data),
+      update: (n, id, patch) => F.updateDoc(F.doc(fs, PREFIX + n, id), patch),
+      del: (n, id) => F.deleteDoc(F.doc(fs, PREFIX + n, id))
+    };
+  }
+  const listeners = {};
+  const read = n => { try { return JSON.parse(localStorage.getItem('glc_' + n) || '{}'); } catch (e) { return {}; } };
+  const write = (n, m) => { localStorage.setItem('glc_' + n, JSON.stringify(m)); (listeners[n] || []).forEach(cb => cb(read(n))); };
+  window.addEventListener('storage', e => { if (e.key && e.key.startsWith('glc_')) { const n = e.key.slice(4); (listeners[n] || []).forEach(cb => cb(read(n))); } });
+  return {
+    mode: 'local',
+    sub: (n, cb) => { (listeners[n] = listeners[n] || []).push(cb); setTimeout(() => cb(read(n)), 0); },
+    set: async (n, id, d) => { const m = read(n); m[id] = Object.assign({}, d, { id }); write(n, m); },
+    update: async (n, id, p) => { const m = read(n); m[id] = Object.assign({}, m[id] || {}, p, { id }); write(n, m); },
+    del: async (n, id) => { const m = read(n); delete m[id]; write(n, m); }
+  };
+}
+
+/* ───────── 狀態 ───────── */
+const S = {
+  tab: 'wall', more: 'menu', wallMode: 'list',
+  calMonth: GL.monthOf(GL.tpDate(Date.now())), calDay: null, reviewMonth: GL.monthOf(GL.tpDate(Date.now())),
+  members: {}, posts: {}, likes: {}, ledger: {}, settings: {}, ready: {},
+  me: localStorage.getItem('gl_me') || null,
+  admin: localStorage.getItem('gl_admin') === '1',
+  editing: null, draft: null, jarPick: null, welcome: { step: 'role', role: null, avatar: null },
+  loginDone: false, newPrompt: Math.floor(Math.random() * PROMPTS.length), installEvt: null
+};
+let DB;
+const $ = s => document.querySelector(s);
+const today = () => GL.tpDate(Date.now());
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const roles = () => (S.settings.main && S.settings.main.roles) || DEFAULT_ROLES;
+const roleOf = id => roles().find(r => r.id === id) || DEFAULT_ROLES.find(r => r.id === id);
+const memberName = id => (S.members[id] && S.members[id].nick) || (roleOf(id) && roleOf(id).label) || '家人';
+const memberAv = id => (S.members[id] && S.members[id].avatar) || (roleOf(id) && roleOf(id).emoji) || '🌸';
+const myBalance = () => GL.balance(S.ledger, S.me);
+const postsSorted = () => Object.values(S.posts).sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+const likedByMe = pid => !!S.likes[pid + '_' + S.me];
+
+/* ───────── 小工具：動畫與提示 ───────── */
+function toast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2700);
+}
+function burstHearts(n, fromEl) {
+  const syms = ['💗', '💖', '💕', '❤️', '💝', '🩷', '✨'];
+  let ox = innerWidth / 2, oy = innerHeight * 0.75;
+  if (fromEl) { const r = fromEl.getBoundingClientRect(); ox = r.left + r.width / 2; oy = r.top + r.height / 2; }
+  for (let i = 0; i < n; i++) {
+    const h = document.createElement('div'); h.className = 'floaty'; h.textContent = syms[i % syms.length];
+    const spread = fromEl ? 120 : innerWidth * 0.8;
+    h.style.left = (ox + (Math.random() - 0.5) * (fromEl ? 30 : spread * 0.5)) + 'px';
+    h.style.top = oy + 'px';
+    h.style.fontSize = (20 + Math.random() * 26) + 'px';
+    h.style.setProperty('--dx', ((Math.random() - 0.5) * spread) + 'px');
+    h.style.setProperty('--rot', ((Math.random() - 0.5) * 60) + 'deg');
+    h.style.setProperty('--sc', (0.9 + Math.random() * 0.8));
+    h.style.setProperty('--dur', (1.4 + Math.random() * 1.2) + 's');
+    h.style.setProperty('--delay', (Math.random() * (fromEl ? 0.25 : 0.7)) + 's');
+    document.body.appendChild(h); setTimeout(() => h.remove(), 3600);
+  }
+}
+function coinPop(text) {
+  const c = document.createElement('div'); c.className = 'coinpop'; c.textContent = '🪙 ' + text; document.body.appendChild(c);
+  setTimeout(() => c.remove(), 1800);
+}
+
+/* ───────── 寫入帳本（重複編號直接略過） ───────── */
+async function grant(entry) {
+  if (S.ledger[entry.id]) return false;
+  const e = Object.assign({ at: Date.now() }, entry);
+  S.ledger[entry.id] = e; // 先更新本機，避免連點重複領
+  try { await DB.set('ledger', entry.id, e); return true; }
+  catch (err) { delete S.ledger[entry.id]; console.warn('ledger write failed', err); return false; }
+}
+
+/* ───────── 啟動 ───────── */
+async function boot() {
+  DB = await makeDB();
+  ['members', 'posts', 'likes', 'ledger', 'settings'].forEach(n => DB.sub(n, m => { S[n] = m; S.ready[n] = true; onData(); }));
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); S.installEvt = e; if (S.tab === 'more') refresh(); });
+  render();
+}
+async function onData() {
+  const R = S.ready;
+  if (!(R.members && R.posts && R.likes && R.ledger && R.settings)) return;
+  if (!S.settings.main) {
+    S.settings.main = { id: 'main', roles: DEFAULT_ROLES, adminHash: await GL.sha('0000'), updatedAt: Date.now() };
+    DB.set('settings', 'main', S.settings.main).catch(() => {});
+  }
+  if (S.me && !S.members[S.me]) { S.me = null; localStorage.removeItem('gl_me'); }
+  if (S.me && !S.loginDone) {
+    S.loginDone = true;
+    const ok = await grant({ id: 'login_' + today() + '_' + S.me, type: 'login', member: S.me, amount: GL.COINS.login, date: today() });
+    if (ok) setTimeout(() => { coinPop('每日登入 +' + GL.COINS.login); burstHearts(6); }, 500);
+  }
+  refresh();
+}
+function refresh() { if (S.tab === 'write' && S.me) { updateTop(); return; } render(); }
+
+/* ───────── 畫面 ───────── */
+function updateTop() { const c = $('#coinchip'); if (c) c.textContent = '🪙 ' + myBalance(); }
+function inLine() { return /Line\//i.test(navigator.userAgent); }
+function isStandalone() { return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone; }
+
+function render() {
+  const app = $('#app');
+  if (!S.ready.settings || !S.ready.members) { app.innerHTML = '<div class="welcome"><span class="big">🌸</span><p class="sub">載入中…</p></div>'; return; }
+  if (!S.me) { app.innerHTML = viewWelcome(); return; }
+  let body = '';
+  if (S.tab === 'wall') body = viewWall();
+  else if (S.tab === 'jar') body = viewJar();
+  else if (S.tab === 'write') body = viewWrite();
+  else if (S.tab === 'wallet') body = viewWallet();
+  else body = viewMore();
+  const banner = (inLine() && !isStandalone()) ? '<div class="banner">📱 你在 LINE 裡開啟。要安裝成 App，請點右下角「⋯」→「用預設瀏覽器開啟」</div>' : '';
+  const local = DB.mode === 'local' ? '<div class="banner" style="background:#fff7d6">🧪 本機測試模式：資料只存在這支手機，尚未連上 Firebase</div>' : '';
+  app.innerHTML = banner + local +
+    '<header class="top"><div class="logo"><span class="bob">🌸</span>家人感恩牆</div><button class="chip" id="coinchip" data-act="go" data-tab="wallet">🪙 ' + myBalance() + '</button></header>' +
+    '<main>' + body + '</main>' + viewNav();
+  if (S.tab === 'write') bindWrite();
+}
+function viewNav() {
+  const t = (id, ic, tx, cls) => '<button class="' + (cls || '') + (S.tab === id ? ' on' : '') + '" data-act="go" data-tab="' + id + '"><span class="ic">' + ic + '</span>' + tx + '</button>';
+  return '<nav class="nav">' + t('wall', '🏠', '感恩牆') + t('jar', '🫙', '感恩罐') + t('write', '＋', '寫日記', 'plus') + t('wallet', '👛', '錢包') + t('more', '🧸', '更多') + '</nav>';
+}
+
+/* 歡迎／選角色 */
+function viewWelcome() {
+  const w = S.welcome;
+  if (w.step === 'role') {
+    return '<div class="welcome"><span class="big">🌸</span><h2>歡迎來到家人感恩牆</h2><p class="sub">請選擇你是誰</p></div><main><div class="rolegrid">' +
+      roles().map(r => '<button class="rolebtn" data-act="pickrole" data-id="' + esc(r.id) + '"><span class="e">' + esc((S.members[r.id] && S.members[r.id].avatar) || r.emoji) + '</span>' + esc(r.label) +
+        (S.members[r.id] ? '<small class="sub" style="display:block;font-weight:500">' + esc(S.members[r.id].nick) + '</small>' : '') + '</button>').join('') + '</div></main>';
+  }
+  if (w.step === 'again') {
+    const m = S.members[w.role];
+    return '<div class="welcome"><span class="big">' + esc(m.avatar) + '</span><h2>你是「' + esc(m.nick) + '」嗎？</h2><p class="sub">這個角色已經有人用過了</p></div><main>' +
+      '<button class="btn block" data-act="joinrole">對，就是我 💕</button><div style="height:12px"></div><button class="btn ghost block" data-act="welcomeback">不是，重新選</button></main>';
+  }
+  const r = roleOf(w.role); const av = w.avatar || r.emoji;
+  return '<div class="welcome"><span class="big">' + esc(av) + '</span><h2>設定你的小檔案</h2></div><main><div class="card">' +
+    '<div class="lbl">暱稱</div><input id="nick" class="input" maxlength="8" value="' + esc(r.label) + '">' +
+    '<div class="lbl">選一個頭像</div><div class="avgrid">' + [r.emoji].concat(AVATARS.filter(a => a !== r.emoji)).map(a => '<button class="' + (a === av ? 'on' : '') + '" data-act="welav" data-av="' + a + '">' + a + '</button>').join('') + '</div>' +
+    '<button class="btn block" data-act="createme" style="margin-top:12px">開始寫感恩 💗</button><div style="height:10px"></div><button class="btn ghost block" data-act="welcomeback">回上一步</button></div></main>';
+}
+
+/* 感恩牆 */
+function postCard(p) {
+  const mine = p.author === S.me, liked = likedByMe(p.id), n = GL.likeCount(S.likes, p.id);
+  const to = (p.to || []).map(t => '<span class="tag">' + esc(memberAv(t)) + ' ' + esc(memberName(t)) + '</span>').join('');
+  return '<article class="card" data-id="' + esc(p.id) + '"><div class="ph"><div class="av">' + esc(memberAv(p.author)) + '</div><div><b>' + esc(memberName(p.author)) + '</b><small>' + GL.fmtDate(p.date) + '</small></div>' +
+    '<div class="menu">' + (mine ? '<button class="icon-btn" data-act="edit" data-id="' + esc(p.id) + '" title="修改">✏️</button>' : '') +
+    '<button class="icon-btn" data-act="exportone" data-id="' + esc(p.id) + '" title="存成圖片">📷</button>' +
+    ((mine || S.admin) ? '<button class="icon-btn" data-act="del" data-id="' + esc(p.id) + '" title="刪除">🗑️</button>' : '') + '</div></div>' +
+    '<ul class="items">' + p.items.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>' +
+    (to ? '<div class="to">💌 想謝謝：' + to + '</div>' : '') +
+    '<div class="act"><button class="like ' + (liked ? 'on' : '') + (mine ? ' self' : '') + '" data-act="like" data-id="' + esc(p.id) + '">' + (liked ? '♥' : '♡') + ' ' + n + '</button>' +
+    (mine ? '<span class="sub">自己的不能按讚喔</span>' : '') + '</div></article>';
+}
+function viewWall() {
+  let h = '<div class="seg"><button class="' + (S.wallMode === 'list' ? 'on' : '') + '" data-act="wallmode" data-m="list">📜 時間軸</button><button class="' + (S.wallMode === 'cal' ? 'on' : '') + '" data-act="wallmode" data-m="cal">📅 月曆</button></div>';
+  let list = postsSorted();
+  if (S.wallMode === 'cal') {
+    const m = S.calMonth, first = GL.dow(m + '-01'), dim = GL.daysInMonth(m), by = {};
+    list.forEach(p => { if (p.date.slice(0, 7) === m) (by[p.date] = by[p.date] || []).push(p); });
+    let cells = GL.DOW.map(d => '<div class="dow">' + d + '</div>').join('');
+    for (let i = 0; i < first; i++) cells += '<div class="d empty"></div>';
+    for (let d = 1; d <= dim; d++) {
+      const ds = m + '-' + String(d).padStart(2, '0'), ps = by[ds] || [];
+      cells += '<button class="d ' + (ps.length ? 'has ' : '') + (ds === today() ? 'today ' : '') + (S.calDay === ds ? 'sel' : '') + '" data-act="calday" data-d="' + ds + '">' + d +
+        (ps.length ? '<span class="dots">' + ps.slice(0, 3).map(p => esc(memberAv(p.author))).join('') + '</span>' : '') + '</button>';
+    }
+    h += '<div class="card"><div class="monthbar"><button class="icon-btn" data-act="calmonth" data-n="-1">◀</button>' + m.replace('-', ' 年 ') + ' 月<button class="icon-btn" data-act="calmonth" data-n="1">▶</button></div><div class="cal">' + cells + '</div></div>';
+    list = S.calDay ? list.filter(p => p.date === S.calDay) : list.filter(p => p.date.slice(0, 7) === m);
+    if (S.calDay) h += '<p class="sub" style="margin:0 4px 8px">' + GL.fmtDate(S.calDay) + ' 的感恩　<button class="btn sm ghost" data-act="calday" data-d="">看整個月</button></p>';
+  }
+  if (!list.length) return h + '<div class="empty"><span class="e">🌱</span>' + (S.wallMode === 'cal' ? '這天還沒有感恩' : '感恩牆還是空的<br>點中間的 ＋ 寫下第一則感恩吧！') + '</div>';
+  return h + list.map(postCard).join('');
+}
+
+/* 感恩罐 */
+function viewJar() {
+  const posts = Object.values(S.posts), total = posts.length;
+  const stars = Math.min(total, 48); let st = '';
+  for (let i = 0; i < stars; i++) {
+    const r1 = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1, r2 = Math.abs(Math.sin(i * 78.233) * 12345.678) % 1;
+    const x = 52 + r1 * 96, y = 176 - r2 * 74 - (i / 48) * 24;
+    st += '<text x="' + x.toFixed(1) + '" y="' + Math.max(y, 92).toFixed(1) + '" font-size="' + (14 + (i % 3) * 4) + '" text-anchor="middle">' + ['⭐', '🌟', '💖', '✨'][i % 4] + '</text>';
+  }
+  const svg = '<svg id="jar" class="jar" viewBox="0 0 200 230" data-act="jar"><rect x="64" y="14" width="72" height="26" rx="9" fill="#ffb3c6"/><rect x="58" y="36" width="84" height="12" rx="6" fill="#ff8fab"/>' +
+    '<path d="M50 52 Q26 62 26 100 L26 190 Q26 218 56 218 L144 218 Q174 218 174 190 L174 100 Q174 62 150 52 Z" fill="#fff" fill-opacity=".72" stroke="#ffc2d1" stroke-width="5"/>' +
+    '<path d="M40 100 Q38 150 42 196" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none" opacity=".9"/>' + st + '</svg>';
+  let slip = '';
+  if (S.jarPick) {
+    slip = '<div class="slip"><div class="ph"><div class="av">' + esc(memberAv(S.jarPick.author)) + '</div><div><b>' + esc(memberName(S.jarPick.author)) + '</b><small>' + GL.fmtDate(S.jarPick.date) + '</small></div></div><div style="white-space:pre-wrap;word-break:break-word">🌷 ' + esc(S.jarPick.text) + '</div></div>';
+  }
+  return '<div class="jarwrap"><h2>🫙 感恩罐</h2><p class="sub">罐子裡有 <b style="color:var(--pink-d)">' + total + '</b> 張感恩紙條</p>' + svg + '<div style="margin-top:10px"><button class="btn" data-act="jar">🎲 抽一張感恩</button></div>' + slip +
+    (total ? '' : '<p class="sub" style="margin-top:14px">罐子還是空的，先去寫一則感恩吧！</p>') + '</div>';
+}
+
+/* 寫日記 */
+function viewWrite() {
+  const day = today(), existId = day + '_' + S.me, exist = S.posts[existId];
+  if (exist && !S.editing) {
+    return '<div class="card pink" style="text-align:center"><div style="font-size:54px">🎉</div><h3>今天已經寫過囉！</h3><p class="sub">一天寫一篇，明天再來～</p></div>' + postCard(exist) +
+      '<button class="btn ghost block" data-act="edit" data-id="' + esc(exist.id) + '">✏️ 修改今天的感恩</button>';
+  }
+  if (!S.draft) {
+    const p = S.editing && S.posts[S.editing];
+    S.draft = p ? { items: p.items.slice(), to: (p.to || []).slice() } : { items: ['', ''], to: [] };
+  }
+  const d = S.draft, others = roles().filter(r => r.id !== S.me);
+  const fields = d.items.map((t, i) => '<div class="field"><textarea data-i="' + i + '" maxlength="' + MAX_LEN + '" placeholder="' + (i === 0 ? '寫下一件今天想感謝的事…' : '還有嗎？（可以不寫）') + '">' + esc(t) + '</textarea><span class="cnt">' + t.length + '/' + MAX_LEN + '</span>' +
+    (d.items.length > 1 ? '<button class="rm" data-act="rmitem" data-i="' + i + '">✕</button>' : '') + '</div>').join('');
+  return '<h2 style="margin:4px 2px 10px">' + (S.editing ? '✏️ 修改感恩' : '📝 今天的感恩') + '</h2>' +
+    '<div class="prompt"><span>💡</span><span class="q">' + esc(PROMPTS[S.newPrompt]) + '</span><button class="icon-btn" data-act="prompt" title="換一題">🔄</button></div>' + fields +
+    (d.items.length < MAX_ITEMS ? '<button class="btn sm ghost" data-act="additem">＋ 再加一條</button>' : '') +
+    '<div class="lbl">💌 想謝謝誰？（可複選，也可以不選）</div><div class="chips">' +
+    others.map(r => '<button class="pick ' + (d.to.includes(r.id) ? 'on' : '') + '" data-act="toggleto" data-id="' + esc(r.id) + '">' + esc(memberAv(r.id)) + ' ' + esc(memberName(r.id)) + '</button>').join('') + '</div>' +
+    '<button class="btn block" id="submitbtn" data-act="submit">' + (S.editing ? '儲存修改 💾' : '送出感恩 💕　+' + GL.COINS.post + ' 🪙') + '</button>' +
+    (S.editing ? '<div style="height:10px"></div><button class="btn ghost block" data-act="canceledit">取消</button>' : '');
+}
+function bindWrite() {
+  document.querySelectorAll('.field textarea').forEach(t => t.addEventListener('input', () => {
+    S.draft.items[Number(t.dataset.i)] = t.value; t.nextElementSibling.textContent = t.value.length + '/' + MAX_LEN;
+  }));
+}
+
+/* 錢包 */
+function viewWallet() {
+  const day = today(), given = GL.likeGivenToday(S.ledger, S.me, day), cap = GL.COINS.likeCap;
+  const did = {
+    login: !!S.ledger['login_' + day + '_' + S.me], post: !!S.ledger['post_' + day + '_' + S.me], like: given >= cap
+  };
+  const task = (ok, tx, rw) => '<div class="task ' + (ok ? 'done' : '') + '"><span class="ck">' + (ok ? '✓' : '') + '</span><span class="tx">' + tx + '</span><span class="rw">' + rw + '</span></div>';
+  const rank = Object.values(S.members).map(m => ({ m: m, b: GL.balance(S.ledger, m.id) })).sort((a, b) => b.b - a.b);
+  const medals = ['🥇', '🥈', '🥉'];
+  const mine = Object.values(S.ledger).filter(e => e.member === S.me).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 30);
+  const myStreak = GL.streak(new Set(Object.values(S.posts).filter(p => p.author === S.me).map(p => p.date)), day);
+  const famStreak = GL.streak(new Set(Object.values(S.posts).map(p => p.date)), day);
+  return '<div class="card pink bal"><div class="sub">我的感恩幣</div><div class="big"><span class="coin">🪙</span> ' + myBalance() + '</div></div>' +
+    '<div class="stat"><div class="s"><b>🔥 ' + myStreak + '</b>我的連續天數</div><div class="s"><b>🏡 ' + famStreak + '</b>全家連續天數</div></div>' +
+    '<div class="card"><h3>📋 今日任務</h3>' + task(did.login, '每日登入', '+' + GL.COINS.login) + task(did.post, '寫感恩日記', '+' + GL.COINS.post) +
+    task(did.like, '按讚別人的日記（' + Math.min(given, cap) + '/' + cap + '）', '+' + GL.COINS.likeGive + ' 每次') + '<p class="sub" style="margin:8px 0 0">被別人按讚，你也會收到 +' + GL.COINS.likeGet + ' 🪙</p></div>' +
+    '<div class="card"><h3>🏆 家人幣幣榜</h3>' + (rank.map((r, i) => '<div class="rank"><span class="no">' + (medals[i] || (i + 1)) + '</span><span class="av" style="width:36px;height:36px;font-size:22px">' + esc(r.m.avatar) + '</span><b style="flex:1">' + esc(r.m.nick) + '</b><b style="color:var(--gold-d)">🪙 ' + r.b + '</b></div>').join('') || '<p class="sub">還沒有人加入</p>') + '</div>' +
+    '<div class="card"><h3>🎁 兌換區</h3><div style="text-align:center;padding:10px 0"><div style="font-size:46px">🎀</div><b>獎勵準備中…</b><p class="sub" style="margin:4px 0 0">先把感恩幣存起來，很快就能兌換囉！</p></div></div>' +
+    '<div class="card"><h3>🧾 收支紀錄</h3>' + (mine.length ? mine.map(e => '<div class="led"><span>' + (GL.LEDGER_LABEL[e.type] || e.type) + (e.type === 'like_get' && e.from ? '（' + esc(memberName(e.from)) + '）' : '') + '<br><small class="sub">' + (e.date || '') + '</small></span><b class="' + (e.amount >= 0 ? 'p' : 'm') + '">' + (e.amount >= 0 ? '+' : '') + e.amount + '</b></div>').join('') : '<p class="sub">還沒有紀錄</p>') + '</div>';
+}
+
+/* 更多 */
+function viewMore() {
+  if (S.more === 'review') return viewReview();
+  if (S.more === 'settings') return viewSettings();
+  if (S.more === 'install') return viewInstall();
+  const m = S.members[S.me] || {};
+  return '<div class="card pink" style="display:flex;align-items:center;gap:12px"><div class="av" style="width:58px;height:58px;font-size:36px">' + esc(m.avatar) + '</div><div><b style="font-size:19px">' + esc(m.nick) + '</b>' + (S.admin ? ' <span class="tag">管理員</span>' : '') + '<br><span class="sub">' + esc((roleOf(S.me) || {}).label || '') + '</span></div></div>' +
+    '<button class="menu-item" data-act="more" data-s="review"><span class="mi">📊</span><span>每月回顧<small>全家這個月的感恩統計，可存成圖片</small></span></button>' +
+    '<button class="menu-item" data-act="exportmonth" data-m="' + GL.monthOf(today()) + '"><span class="mi">🖼️</span><span>匯出本月日記<small>存成數張圖片（JPG）</small></span></button>' +
+    '<button class="menu-item" data-act="more" data-s="settings"><span class="mi">⚙️</span><span>設定<small>暱稱、頭像、管理員功能</small></span></button>' +
+    '<button class="menu-item" data-act="more" data-s="install"><span class="mi">📲</span><span>安裝到手機桌面<small>像 App 一樣打開</small></span></button>';
+}
+function viewReview() {
+  const m = S.reviewMonth, st = GL.monthStats(S.posts, S.likes, m);
+  const max = Math.max(1, ...Object.values(st.byAuthor)), maxT = Math.max(1, ...Object.values(st.thanked));
+  const bars = (obj, mx) => Object.keys(obj).sort((a, b) => obj[b] - obj[a]).map(id => '<div class="bar"><span style="width:84px">' + esc(memberAv(id)) + ' ' + esc(memberName(id)) + '</span><span class="tr"><span class="fl" style="display:block;width:' + (obj[id] / mx * 100) + '%"></span></span><b>' + obj[id] + '</b></div>').join('') || '<p class="sub">這個月還沒有資料</p>';
+  return '<button class="back" data-act="more" data-s="menu">‹ 返回</button><div class="card"><div class="monthbar"><button class="icon-btn" data-act="revmonth" data-n="-1">◀</button>' + m.replace('-', ' 年 ') + ' 月 回顧<button class="icon-btn" data-act="revmonth" data-n="1">▶</button></div>' +
+    '<div class="stat"><div class="s"><b>' + st.posts + '</b>篇感恩</div><div class="s"><b>' + st.activeDays + '</b>天有人寫</div><div class="s"><b>' + st.hearts + '</b>個愛心 💗</div><div class="s"><b>' + Object.keys(st.byAuthor).length + '</b>位家人參與</div></div>' +
+    '<h3>✍️ 誰寫最多</h3>' + bars(st.byAuthor, max) + '<h3 style="margin-top:12px">💌 誰最常被感謝</h3>' + bars(st.thanked, maxT) +
+    (st.top && st.topLikes > 0 ? '<h3 style="margin-top:12px">🏅 最多愛心的一篇（' + st.topLikes + ' 💗）</h3>' + postCard(st.top) : '') + '</div>' +
+    '<button class="btn block" data-act="exportreview" data-m="' + m + '">📷 把回顧存成圖片</button><div style="height:10px"></div><button class="btn mint block" data-act="exportmonth" data-m="' + m + '">🖼️ 匯出整月日記（多張圖）</button>';
+}
+function viewSettings() {
+  const m = S.members[S.me], r = roleOf(S.me) || { emoji: '🌸' };
+  let h = '<button class="back" data-act="more" data-s="menu">‹ 返回</button><div class="card"><h3>我的小檔案</h3><div class="lbl">暱稱</div><div class="row"><input id="nick" class="input" maxlength="8" value="' + esc(m.nick) + '"><button class="btn sm" data-act="savenick">儲存</button></div>' +
+    '<div class="lbl">頭像</div><div class="avgrid">' + AVATARS.map(a => '<button class="' + (a === m.avatar ? 'on' : '') + '" data-act="setav" data-av="' + a + '">' + a + '</button>').join('') + '</div>' +
+    '<button class="btn ghost block" data-act="switchrole" style="margin-top:8px">🔁 換成別的角色</button></div>';
+  if (!S.admin) {
+    h += '<div class="card"><h3>🔑 管理員</h3><p class="sub">輸入管理密碼，就可以刪除任何內容、增減家人角色。</p><div class="row"><input id="adminpw" class="input" type="password" inputmode="numeric" placeholder="管理密碼"><button class="btn sm" data-act="adminlogin">進入</button></div></div>';
+  } else {
+    h += '<div class="card"><h3>🔑 管理員模式 <span class="tag">已開啟</span></h3><p class="sub">現在可以刪除任何人的日記。</p>' +
+      '<div class="lbl">修改管理密碼</div><div class="row"><input id="newpw" class="input" type="password" placeholder="新密碼（至少 4 個字）"><button class="btn sm" data-act="changepw">更改</button></div>' +
+      '<div class="lbl">家人角色（點 ✕ 移除）</div><div class="chips">' + roles().map(r2 => '<span class="pick on">' + esc(r2.emoji) + ' ' + esc(r2.label) + ' <button data-act="rmrole" data-id="' + esc(r2.id) + '" style="margin-left:4px">✕</button></span>').join('') + '</div>' +
+      '<div class="row"><input id="rolelabel" class="input" maxlength="6" placeholder="新角色，例如：阿姨"><input id="roleemoji" class="input" maxlength="2" style="max-width:64px;text-align:center" placeholder="🐣"><button class="btn sm" data-act="addrole">新增</button></div>' +
+      '<button class="btn ghost block" data-act="adminlogout" style="margin-top:12px">離開管理員模式</button></div>';
+  }
+  return h + '<p class="sub" style="text-align:center">資料：' + (DB.mode === 'cloud' ? '☁️ 已連上 Firebase' : '🧪 本機測試模式') + '</p>';
+}
+function viewInstall() {
+  return '<button class="back" data-act="more" data-s="menu">‹ 返回</button>' +
+    (isStandalone() ? '<div class="notice">🎉 你已經是用 App 模式在打開囉！</div>' : '') +
+    (S.installEvt ? '<button class="btn block" data-act="doinstall" style="margin-bottom:14px">📲 一鍵安裝</button>' : '') +
+    (inLine() ? '<div class="notice warn">⚠️ 你現在在 LINE 裡面。請先點右下角「⋯」，選「用預設瀏覽器開啟」（iPhone 是 Safari、Android 是 Chrome），再照下面步驟安裝。</div>' : '') +
+    '<div class="card"><h3>🍎 iPhone（Safari）</h3><ol style="padding-left:20px;margin:8px 0 0"><li>點下方中間的「分享」按鈕 ⬆️</li><li>往下滑，點「加入主畫面」</li><li>點右上角「新增」，桌面就有小圖示囉 🌸</li></ol></div>' +
+    '<div class="card"><h3>🤖 Android（Chrome）</h3><ol style="padding-left:20px;margin:8px 0 0"><li>點右上角「⋮」選單</li><li>點「安裝應用程式」或「加到主畫面」</li><li>確認後桌面就有圖示囉 🌸</li></ol></div>' +
+    '<p class="sub">安裝後打開就是全螢幕，跟一般 App 一樣！</p>';
+}
+
+/* ───────── 事件 ───────── */
+const ACT = {
+  go(t) { S.tab = t.dataset.tab; if (S.tab === 'write' && !S.editing) S.draft = S.draft; if (S.tab === 'more') S.more = 'menu'; render(); scrollTo(0, 0); },
+  pickrole(t) { const id = t.dataset.id; S.welcome.role = id; S.welcome.avatar = null; S.welcome.step = S.members[id] ? 'again' : 'profile'; render(); },
+  welcomeback() { S.welcome = { step: 'role', role: null, avatar: null }; render(); },
+  welav(t) { const n = $('#nick'); S.welcome.nick = n ? n.value : ''; S.welcome.avatar = t.dataset.av; render(); const n2 = $('#nick'); if (n2 && S.welcome.nick) n2.value = S.welcome.nick; },
+  joinrole() { localStorage.setItem('gl_me', S.welcome.role); S.me = S.welcome.role; S.loginDone = false; S.welcome = { step: 'role' }; onData(); },
+  async createme() {
+    const r = roleOf(S.welcome.role), nick = ($('#nick').value || '').trim() || r.label, id = S.welcome.role;
+    const data = { id, role: id, nick: nick.slice(0, 8), avatar: S.welcome.avatar || r.emoji, createdAt: Date.now() };
+    S.members[id] = data; await DB.set('members', id, data).catch(() => {});
+    localStorage.setItem('gl_me', id); S.me = id; S.loginDone = false; S.welcome = { step: 'role' }; onData();
+  },
+  wallmode(t) { S.wallMode = t.dataset.m; render(); },
+  calmonth(t) { S.calMonth = GL.addMonths(S.calMonth, Number(t.dataset.n)); S.calDay = null; render(); },
+  calday(t) { S.calDay = t.dataset.d || null; render(); },
+  prompt() { S.newPrompt = (S.newPrompt + 1) % PROMPTS.length; const q = $('.prompt .q'); if (q) q.textContent = PROMPTS[S.newPrompt]; },
+  additem() { if (S.draft.items.length < MAX_ITEMS) { S.draft.items.push(''); render(); } },
+  rmitem(t) { S.draft.items.splice(Number(t.dataset.i), 1); render(); },
+  toggleto(t) { const id = t.dataset.id, a = S.draft.to, i = a.indexOf(id); if (i >= 0) a.splice(i, 1); else a.push(id); t.classList.toggle('on'); },
+  edit(t) { const p = S.posts[t.dataset.id]; if (!p || p.author !== S.me) return; S.editing = p.id; S.draft = null; S.tab = 'write'; render(); scrollTo(0, 0); },
+  canceledit() { S.editing = null; S.draft = null; S.tab = 'wall'; render(); },
+  async submit(t) {
+    const items = S.draft.items.map(x => x.trim()).filter(Boolean);
+    if (!items.length) { toast('請至少寫一條感恩喔 🌷'); return; }
+    t.disabled = true;
+    if (S.editing) {
+      const p = S.posts[S.editing];
+      const patch = { items, to: S.draft.to.slice(), updatedAt: Date.now() };
+      Object.assign(p, patch); await DB.update('posts', p.id, patch).catch(e => toast('儲存失敗，請稍後再試'));
+      S.editing = null; S.draft = null; S.tab = 'wall'; render(); toast('已更新 💾'); return;
+    }
+    const day = today(), id = day + '_' + S.me;
+    if (S.posts[id]) { toast('今天已經寫過囉'); S.tab = 'wall'; render(); return; }
+    const post = { id, author: S.me, date: day, items, to: S.draft.to.slice(), createdAt: Date.now(), updatedAt: Date.now(), source: 'web' };
+    S.posts[id] = post;
+    try { await DB.set('posts', id, post); } catch (e) { delete S.posts[id]; t.disabled = false; toast('送出失敗，請檢查網路'); return; }
+    const got = await grant({ id: 'post_' + id, type: 'post', member: S.me, amount: GL.COINS.post, date: day, post: id });
+    burstHearts(34); if (got) setTimeout(() => coinPop('寫感恩日記 +' + GL.COINS.post), 450);
+    S.draft = null; S.newPrompt = (S.newPrompt + 1) % PROMPTS.length;
+    setTimeout(() => { S.tab = 'wall'; S.wallMode = 'list'; render(); scrollTo(0, 0); }, 1500);
+  },
+  async like(t) {
+    const post = S.posts[t.dataset.id]; if (!post) return;
+    const plan = GL.planLike({ post, likerId: S.me, date: today(), ledger: S.ledger, likes: S.likes });
+    if (!plan.ok) { toast(plan.reason === 'self' ? '自己的日記不能自己按讚喔 😆' : '已經按過愛心囉 💗'); return; }
+    const like = { id: plan.likeId, post: post.id, member: S.me, at: Date.now() };
+    S.likes[plan.likeId] = like; burstHearts(8, t);
+    await DB.set('likes', plan.likeId, like).catch(() => {});
+    let coin = false; for (const e of plan.entries) { if (await grant(e) && e.member === S.me) coin = true; }
+    if (coin) coinPop('按讚 +' + GL.COINS.likeGive); else toast('今天按讚的幣已領滿 5 次，愛心還是有送出 💗');
+    render();
+  },
+  async del(t) {
+    const p = S.posts[t.dataset.id]; if (!p) return;
+    if (!(p.author === S.me || S.admin)) return;
+    if (!confirm('確定要刪除這篇感恩嗎？\n這篇得到的感恩幣和愛心也會一起收回。')) return;
+    const plan = GL.planDelete(p, S.ledger, S.likes);
+    delete S.posts[p.id]; plan.ledgerIds.forEach(k => delete S.ledger[k]); plan.likeIds.forEach(k => delete S.likes[k]);
+    render();
+    try { await Promise.all([DB.del('posts', p.id)].concat(plan.ledgerIds.map(k => DB.del('ledger', k)), plan.likeIds.map(k => DB.del('likes', k)))); toast('已刪除'); }
+    catch (e) { toast('刪除時發生問題，請重新整理確認'); }
+  },
+  jar(t) {
+    const all = []; Object.values(S.posts).forEach(p => p.items.forEach(x => all.push({ text: x, author: p.author, date: p.date })));
+    if (!all.length) { toast('罐子還是空的 🫙'); return; }
+    const j = $('#jar'); if (j) { j.classList.remove('shake'); void j.getBBox; j.classList.add('shake'); }
+    S.jarPick = all[Math.floor(Math.random() * all.length)];
+    setTimeout(() => { render(); burstHearts(10); }, 520);
+  },
+  more(t) { S.more = t.dataset.s; render(); scrollTo(0, 0); },
+  revmonth(t) { S.reviewMonth = GL.addMonths(S.reviewMonth, Number(t.dataset.n)); render(); },
+  async savenick() { const v = ($('#nick').value || '').trim().slice(0, 8); if (!v) return; S.members[S.me].nick = v; await DB.update('members', S.me, { nick: v }).catch(() => {}); toast('已儲存 🌸'); render(); },
+  async setav(t) { S.members[S.me].avatar = t.dataset.av; await DB.update('members', S.me, { avatar: t.dataset.av }).catch(() => {}); render(); },
+  switchrole() { if (!confirm('要換成別的角色嗎？')) return; localStorage.removeItem('gl_me'); S.me = null; S.loginDone = false; S.tab = 'wall'; S.more = 'menu'; S.draft = null; S.editing = null; S.welcome = { step: 'role' }; render(); },
+  async adminlogin() {
+    const pw = $('#adminpw').value, h = await GL.sha(pw);
+    if (h === S.settings.main.adminHash) { S.admin = true; localStorage.setItem('gl_admin', '1'); toast('管理員模式開啟 🔑'); render(); } else toast('密碼不對喔');
+  },
+  adminlogout() { S.admin = false; localStorage.removeItem('gl_admin'); render(); },
+  async changepw() {
+    const pw = $('#newpw').value; if (pw.length < 4) { toast('密碼至少 4 個字'); return; }
+    const hash = await GL.sha(pw); S.settings.main.adminHash = hash; S.settings.main.updatedAt = Date.now();
+    await DB.update('settings', 'main', { adminHash: hash, updatedAt: Date.now() }).catch(() => {}); $('#newpw').value = ''; toast('管理密碼已更新 ✅');
+  },
+  async rmrole(t) {
+    const id = t.dataset.id; if (roles().length <= 2) { toast('至少要留 2 個角色'); return; }
+    if (!confirm('移除角色「' + memberName(id) + '」？（已寫的日記會保留）')) return;
+    const list = roles().filter(r => r.id !== id); S.settings.main.roles = list;
+    await DB.update('settings', 'main', { roles: list }).catch(() => {}); render();
+  },
+  async addrole() {
+    const label = ($('#rolelabel').value || '').trim(), emoji = ($('#roleemoji').value || '').trim() || '🐣';
+    if (!label) { toast('請輸入角色名稱'); return; }
+    const list = roles().concat([{ id: 'r' + Date.now().toString(36), label, emoji }]);
+    S.settings.main.roles = list; await DB.update('settings', 'main', { roles: list }).catch(() => {}); render();
+  },
+  async doinstall() { if (S.installEvt) { S.installEvt.prompt(); await S.installEvt.userChoice.catch(() => {}); S.installEvt = null; render(); } },
+  exportone(t) { const p = S.posts[t.dataset.id]; if (p) exportImages('單篇感恩', [drawSingle(p)], 'gratitude-' + p.date); },
+  exportmonth(t) { exportMonth(t.dataset.m); },
+  exportreview(t) { exportImages(t.dataset.m.replace('-', ' 年 ') + ' 月回顧', [drawReview(t.dataset.m)], 'gratitude-review-' + t.dataset.m); }
+};
+document.addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (!t) return; const f = ACT[t.dataset.act]; if (f) f(t, e); });
+
+/* ───────── 匯出成 JPG（Canvas 手繪，不依賴外部套件） ───────── */
+const INK = '#5b3a42', SOFT = '#a7838c', PINK = '#ff8fab';
+const F = (w, s) => w + ' ' + s + 'px "PingFang TC","Hiragino Sans GB","Noto Sans TC","Microsoft JhengHei",sans-serif';
+function mkCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function wrapText(ctx, text, maxW) {
+  const out = []; String(text).split('\n').forEach(par => { let line = ''; for (const ch of par) { const t = line + ch; if (ctx.measureText(t).width > maxW && line) { out.push(line); line = ch; } else line = t; } out.push(line); }); return out;
+}
+function bg(ctx, w, h) {
+  const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#ffe3ec'); g.addColorStop(1, '#fff1dc'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = .55; ctx.font = '56px sans-serif'; ctx.textAlign = 'center';
+  for (let i = 0; i < 14; i++) { ctx.fillText(['💗', '✨', '🌷', '⭐'][i % 4], (i * 197 + 80) % w, (i * 331 + 120) % h); } ctx.globalAlpha = 1; ctx.textAlign = 'left';
+}
+// 畫（或只量高度）一張貼文卡
+function layoutPost(ctx, p, x, y, w, draw) {
+  const pad = 36, inner = w - pad * 2; let cy = y + pad;
+  const heart = GL.likeCount(S.likes, p.id), to = (p.to || []).map(t => memberAv(t) + memberName(t)).join('、');
+  if (draw) {
+    ctx.fillStyle = '#fff'; rr(ctx, x, y, w, layoutPost(ctx, p, x, y, w, false), 34); ctx.fill();
+    ctx.fillStyle = '#ffe5ec'; ctx.beginPath(); ctx.arc(x + pad + 40, cy + 40, 40, 0, 7); ctx.fill();
+    ctx.font = '46px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#000'; ctx.fillText(memberAv(p.author), x + pad + 40, cy + 44);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = INK; ctx.font = F(700, 36); ctx.fillText(memberName(p.author), x + pad + 100, cy + 36);
+    ctx.fillStyle = SOFT; ctx.font = F(400, 26); ctx.fillText(GL.fmtDate(p.date), x + pad + 100, cy + 74);
+  }
+  cy += 104;
+  p.items.forEach(t => {
+    ctx.font = F(500, 34); const lines = wrapText(ctx, '🌷 ' + t, inner - 40), bh = lines.length * 50 + 24;
+    if (draw) { ctx.fillStyle = '#fffaf7'; rr(ctx, x + pad, cy, inner, bh, 22); ctx.fill(); ctx.fillStyle = INK; ctx.font = F(500, 34); lines.forEach((l, i) => ctx.fillText(l, x + pad + 20, cy + 46 + i * 50)); }
+    cy += bh + 12;
+  });
+  if (to) { ctx.font = F(500, 28); const lines = wrapText(ctx, '💌 想謝謝：' + to, inner); if (draw) { ctx.fillStyle = '#2f6b55'; ctx.font = F(500, 28); lines.forEach((l, i) => ctx.fillText(l, x + pad, cy + 34 + i * 40)); } cy += lines.length * 40 + 14; }
+  if (draw) { ctx.fillStyle = PINK; ctx.font = F(700, 30); ctx.fillText('♥ ' + heart, x + pad, cy + 34); }
+  cy += 50;
+  return cy - y + pad - 12;
+}
+function drawSingle(p) {
+  const w = 1080, probe = mkCanvas(10, 10).getContext('2d'), ch = layoutPost(probe, p, 60, 0, w - 120, false), h = Math.max(ch + 290, 660);
+  const c = mkCanvas(w, h), ctx = c.getContext('2d'); bg(ctx, w, h);
+  ctx.fillStyle = INK; ctx.font = F(800, 52); ctx.textAlign = 'center'; ctx.fillText('🌸 家人感恩牆', w / 2, 120); ctx.textAlign = 'left';
+  layoutPost(ctx, p, 60, 170, w - 120, true);
+  ctx.fillStyle = SOFT; ctx.font = F(400, 26); ctx.textAlign = 'center'; ctx.fillText('每一天，都有值得感謝的事', w / 2, h - 60); ctx.textAlign = 'left';
+  return c;
+}
+function drawMonthPages(month) {
+  const W = 1080, H = 1920, posts = Object.values(S.posts).filter(p => p.date.slice(0, 7) === month).sort((a, b) => a.date.localeCompare(b.date) || (a.createdAt || 0) - (b.createdAt || 0));
+  const probe = mkCanvas(10, 10).getContext('2d'), pages = [[]]; let y = 230;
+  posts.forEach(p => { const ph = layoutPost(probe, p, 60, 0, W - 120, false); if (y + ph > H - 110 && pages[pages.length - 1].length) { pages.push([]); y = 230; } pages[pages.length - 1].push({ p, h: ph }); y += ph + 28; });
+  return pages.map((pg, i) => {
+    const c = mkCanvas(W, H), ctx = c.getContext('2d'); bg(ctx, W, H);
+    ctx.fillStyle = INK; ctx.font = F(800, 56); ctx.textAlign = 'center'; ctx.fillText('🌸 ' + month.replace('-', ' 年 ') + ' 月 感恩日記', W / 2, 120);
+    ctx.fillStyle = SOFT; ctx.font = F(500, 28); ctx.fillText('第 ' + (i + 1) + ' / ' + pages.length + ' 頁　·　共 ' + posts.length + ' 篇', W / 2, 176); ctx.textAlign = 'left';
+    let yy = 230; pg.forEach(o => { layoutPost(ctx, o.p, 60, yy, W - 120, true); yy += o.h + 28; });
+    return c;
+  });
+}
+function drawReview(month) {
+  const W = 1080, st = GL.monthStats(S.posts, S.likes, month), probe = mkCanvas(10, 10).getContext('2d');
+  const secH = obj => { const n = Math.min(5, Object.keys(obj).length); return n ? 100 + 62 * n : 114; };
+  const showTop = st.top && st.topLikes > 0;
+  let y0 = 600 + secH(st.byAuthor) + secH(st.thanked), topH = showTop ? layoutPost(probe, st.top, 60, 0, W - 120, false) : 0;
+  const H = Math.max(1500, y0 + (showTop ? 40 + topH : 0) + 110);
+  const c = mkCanvas(W, H), ctx = c.getContext('2d'); bg(ctx, W, H);
+  ctx.textAlign = 'center'; ctx.fillStyle = INK; ctx.font = F(800, 60); ctx.fillText('🌸 ' + month.replace('-', ' 年 ') + ' 月 感恩回顧', W / 2, 130);
+  const boxes = [[st.posts, '篇感恩'], [st.activeDays, '天有人寫'], [st.hearts, '個愛心 💗'], [Object.keys(st.byAuthor).length, '位家人參與']];
+  boxes.forEach((b, i) => { const x = 60 + (i % 2) * 495, y = 190 + Math.floor(i / 2) * 190; ctx.fillStyle = '#fff'; rr(ctx, x, y, 465, 160, 34); ctx.fill(); ctx.fillStyle = '#f0668c'; ctx.font = F(900, 72); ctx.fillText(String(b[0]), x + 232, y + 90); ctx.fillStyle = SOFT; ctx.font = F(500, 28); ctx.fillText(b[1], x + 232, y + 134); });
+  ctx.textAlign = 'left'; let y = 600;
+  const section = (title, obj) => {
+    ctx.fillStyle = INK; ctx.font = F(800, 38); ctx.fillText(title, 60, y); y += 24; const keys = Object.keys(obj).sort((a, b) => obj[b] - obj[a]).slice(0, 5), mx = Math.max(1, ...Object.values(obj));
+    if (!keys.length) { ctx.fillStyle = SOFT; ctx.font = F(400, 28); ctx.fillText('這個月還沒有資料', 60, y + 46); y += 90; return; }
+    keys.forEach(id => { y += 62; ctx.fillStyle = INK; ctx.font = F(500, 30); ctx.fillText(memberAv(id) + ' ' + memberName(id), 60, y); ctx.fillStyle = '#ffe5ec'; rr(ctx, 290, y - 30, 600, 34, 17); ctx.fill(); ctx.fillStyle = PINK; rr(ctx, 290, y - 30, Math.max(34, 600 * obj[id] / mx), 34, 17); ctx.fill(); ctx.fillStyle = INK; ctx.font = F(700, 30); ctx.fillText(String(obj[id]), 910, y); }); y += 76;
+  };
+  section('✍️ 誰寫最多', st.byAuthor); section('💌 誰最常被感謝', st.thanked);
+  if (showTop) {
+    ctx.fillStyle = INK; ctx.font = F(800, 38); ctx.fillText('🏅 最多愛心的一篇（' + st.topLikes + ' 💗）', 60, y + 10);
+    layoutPost(ctx, st.top, 60, y + 40, W - 120, true);
+  }
+  ctx.fillStyle = SOFT; ctx.font = F(400, 26); ctx.textAlign = 'center'; ctx.fillText('🌸 家人感恩牆', W / 2, H - 50); ctx.textAlign = 'left';
+  return c;
+}
+function toBlob(c) { return new Promise(r => c.toBlob(r, 'image/jpeg', 0.92)); }
+async function exportImages(title, canvases, name) {
+  toast('正在製作圖片…');
+  const blobs = await Promise.all(canvases.map(toBlob)), urls = blobs.map(b => URL.createObjectURL(b));
+  const files = blobs.map((b, i) => new File([b], name + (blobs.length > 1 ? '-' + (i + 1) : '') + '.jpg', { type: 'image/jpeg' }));
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = '<div class="sheet"><h3 style="margin-bottom:4px">🖼️ ' + esc(title) + '</h3><p class="sub" style="margin:0 0 10px">共 ' + blobs.length + ' 張。可以按下面的按鈕，或直接長按圖片存到相簿。</p>' + urls.map(u => '<img src="' + u + '" alt="">').join('') +
+    '<div class="row"><button class="btn block" data-x="share">📤 分享 / 存到相簿</button><button class="btn ghost" data-x="close">關閉</button></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click', async e => {
+    if (e.target === m || (e.target.dataset && e.target.dataset.x === 'close')) { m.remove(); urls.forEach(u => URL.revokeObjectURL(u)); return; }
+    if (e.target.dataset && e.target.dataset.x === 'share') {
+      if (navigator.canShare && navigator.canShare({ files })) { try { await navigator.share({ files, title }); return; } catch (err) { if (err && err.name === 'AbortError') return; } }
+      files.forEach((f, i) => setTimeout(() => { const a = document.createElement('a'); a.href = urls[i]; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); }, i * 400));
+    }
+  });
+}
+function exportMonth(month) {
+  if (!Object.values(S.posts).some(p => p.date.slice(0, 7) === month)) { toast('這個月還沒有日記'); return; }
+  exportImages(month.replace('-', ' 年 ') + ' 月日記', drawMonthPages(month), 'gratitude-' + month);
+}
+
+boot();
+</script>
+</body>
+</html>
