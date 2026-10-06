@@ -1,5 +1,5 @@
-// 家人感恩牆 service worker：頁面本身離線也能開，資料交給 Firebase
-const CACHE = 'gratitude-v1';
+// 感謝日記 service worker：頁面本身離線也能開，資料交給 Firebase
+const CACHE = 'gratitude-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png'];
 
 self.addEventListener('install', e => {

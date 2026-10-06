@@ -1,6 +1,6 @@
 {
-  "name": "家人感恩牆",
-  "short_name": "感恩牆",
+  "name": "感謝日記",
+  "short_name": "感謝日記",
   "description": "全家一起寫感恩日記，用愛心和感恩幣記錄每一天的小幸福",
   "lang": "zh-Hant",
   "start_url": "./index.html",

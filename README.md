@@ -1,4 +1,4 @@
-# 家人感恩牆（第一版）
+# 感謝日記（第一版）
 
 全家一起寫感恩日記的 PWA 網頁。單檔 `index.html` + Firebase Firestore + GitHub Pages。
 
