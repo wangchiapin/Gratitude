@@ -351,7 +351,7 @@ const S = {
   me: localStorage.getItem('gl_me') || null,
   admin: localStorage.getItem('gl_admin') === '1',
   editing: null, draft: null, jarPick: null, welcome: { step: 'role', role: null, avatar: null },
-  loginDone: false, newPrompt: Math.floor(Math.random() * PROMPTS.length), installEvt: null
+  newRoleEmoji: '🐣', loginDone: false, newPrompt: Math.floor(Math.random() * PROMPTS.length), installEvt: null
 };
 let DB;
 const $ = s => document.querySelector(s);
@@ -612,7 +612,9 @@ function viewSettings() {
     h += '<div class="card"><h3>🔑 管理員模式 <span class="tag">已開啟</span></h3><p class="sub">現在可以刪除任何人的日記。</p>' +
       '<div class="lbl">修改管理密碼</div><div class="row"><input id="newpw" class="input" type="password" placeholder="新密碼（至少 4 個字）"><button class="btn sm" data-act="changepw">更改</button></div>' +
       '<div class="lbl">家人角色（點 ✕ 移除）</div><div class="chips">' + roles().map(r2 => '<span class="pick on">' + esc(r2.emoji) + ' ' + esc(r2.label) + ' <button data-act="rmrole" data-id="' + esc(r2.id) + '" style="margin-left:4px">✕</button></span>').join('') + '</div>' +
-      '<div class="row"><input id="rolelabel" class="input" maxlength="6" placeholder="新角色，例如：阿姨"><input id="roleemoji" class="input" maxlength="2" style="max-width:64px;text-align:center" placeholder="🐣"><button class="btn sm" data-act="addrole">新增</button></div>' +
+      '<div class="lbl">新增角色</div><div class="row"><span class="av" style="width:46px;height:46px">' + esc(S.newRoleEmoji) + '</span><input id="rolelabel" class="input" maxlength="6" placeholder="角色名稱，例如：阿姨"></div>' +
+      '<div class="avgrid">' + AVATARS.map(a => '<button class="' + (a === S.newRoleEmoji ? 'on' : '') + '" data-act="roleav" data-av="' + a + '">' + a + '</button>').join('') + '</div>' +
+      '<button class="btn block" data-act="addrole">＋ 新增這個角色</button>' +
       '<button class="btn ghost block" data-act="adminlogout" style="margin-top:12px">離開管理員模式</button></div>';
   }
   return h + '<p class="sub" style="text-align:center">資料：' + (DB.mode === 'cloud' ? '☁️ 已連上 Firebase' : '🧪 本機測試模式') + '</p>';
@@ -718,11 +720,12 @@ const ACT = {
     const list = roles().filter(r => r.id !== id); S.settings.main.roles = list;
     await DB.update('settings', 'main', { roles: list }).catch(() => {}); render();
   },
+  roleav(t) { const n = $('#rolelabel'), v = n ? n.value : ''; S.newRoleEmoji = t.dataset.av; render(); const n2 = $('#rolelabel'); if (n2) n2.value = v; },
   async addrole() {
-    const label = ($('#rolelabel').value || '').trim(), emoji = ($('#roleemoji').value || '').trim() || '🐣';
+    const label = ($('#rolelabel').value || '').trim(), emoji = S.newRoleEmoji || '🐣';
     if (!label) { toast('請輸入角色名稱'); return; }
     const list = roles().concat([{ id: 'r' + Date.now().toString(36), label, emoji }]);
-    S.settings.main.roles = list; await DB.update('settings', 'main', { roles: list }).catch(() => {}); render();
+    S.settings.main.roles = list; S.newRoleEmoji = '🐣'; await DB.update('settings', 'main', { roles: list }).catch(() => {}); toast('已新增角色「' + label + '」'); render();
   },
   async doinstall() { if (S.installEvt) { S.installEvt.prompt(); await S.installEvt.userChoice.catch(() => {}); S.installEvt = null; render(); } },
   exportone(t) { const p = S.posts[t.dataset.id]; if (p) exportImages('單篇感恩', [drawSingle(p)], 'gratitude-' + p.date); },
