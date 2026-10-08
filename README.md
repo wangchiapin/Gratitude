@@ -1,3 +1,15 @@
+# 感謝日記
+
+> 全家一起寫感恩日記的 PWA 網頁
+
+- **網址：** https://wangchiapin.github.io/Gratitude/
+- **Firebase 專案：** gratitude-wall-ef60d
+- **登入方式：** —
+- **狀態：** 測試中
+- **備註：** Firestore 規則見 `firestore.rules`。
+
+---
+
 # 感謝日記（第一版）
 
 全家一起寫感恩日記的 PWA 網頁。單檔 `index.html` + Firebase Firestore + GitHub Pages。
