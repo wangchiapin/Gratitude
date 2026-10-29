@@ -1,5 +1,7 @@
 // ===== Firebase 專案 pickminalarm 的「Firestore」規則（整份貼上取代）=====
-// 連接的 repo：gratitude（感恩日記）。整理日期：2026-10-29
+// 連接的 repo：gratitude（感恩日記）。最後更新：2026-10-29 15:25（以下為這次整理：規則內容沒改，只加註解）
+// 變更紀錄（只留最新 3 筆，新的放最上面；每次改規則都要寫日期＋時間）：
+//   - 2026-10-29 15:25 加最上方註解、規則檔改名（規則內容沒改）
 // 同專案的鬧鐘（repo pickminalarm）用的是 Realtime Database，規則在 pickminalarm repo 的 pickminalarm-database.rules.json，兩份分開貼
 rules_version = '2';
 service cloud.firestore {
