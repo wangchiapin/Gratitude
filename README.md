@@ -6,7 +6,7 @@
 - **Firebase 專案：** pickminalarm（用它的 Firestore；pickminalarm 原本的鬧鐘用的是 Realtime Database，兩個互不影響）
 - **登入方式：** —
 - **狀態：** 測試中
-- **備註：** Firestore 規則見 `firestore.rules`。
+- **備註：** Firestore 規則見 `pickminalarm-firestore.rules.txt`。
 
 ---
 
@@ -30,7 +30,7 @@
 ## 連上 Firebase（已設定好）
 `index.html` 裡的 `FIREBASE_CONFIG` 已填入專案 `pickminalarm`（原本用的 `gratitude-wall-ef60d` 已不再使用）。還需要在 Firebase 控制台做兩件事：
 1. **建立資料庫**：在 pickminalarm 專案 Build → Firestore Database → 建立資料庫（位置 `asia-east1` 台灣；模式選「正式版」即可，規則下一步會換掉）。這一步已完成。
-2. **貼上規則**：Firestore Database → 規則（Rules）→ 把 `firestore.rules` 的**全部內容**貼上取代 → 發布。這個專案的 Firestore 只給感謝日記用，規則裡只開放 `gratitude_` 開頭的資料，其他一律關閉。
+2. **貼上規則**：Firestore Database → 規則（Rules）→ 把 `pickminalarm-firestore.rules.txt` 的**全部內容**貼上取代 → 發布。這個專案的 Firestore 只給感謝日記用，規則裡只開放 `gratitude_` 開頭的資料，其他一律關閉。
 
 資料存在這幾個 collection：`gratitude_members`、`gratitude_posts`、`gratitude_likes`、`gratitude_ledger`、`gratitude_settings`。
 
